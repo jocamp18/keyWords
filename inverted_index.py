@@ -3,11 +3,13 @@ from mrjob.step import MRStep
 from nltk.stem import PorterStemmer
 from nltk.tokenize import sent_tokenize, word_tokenize, RegexpTokenizer
 from nltk.corpus import stopwords
+from mongo import Mongo
 import os
 
 ps = PorterStemmer()
 stop_words = stopwords.words('english')
 tokenizer = RegexpTokenizer(r'\w+')
+db = Mongo()
 
 def tokenize(line):
   stemmed_words = []
@@ -20,17 +22,19 @@ def tokenize(line):
 class InvertedIndex(MRJob):
   
   def mapper(self, key, line):
-    values = tokenize(line)
+    words = tokenize(line)
     file_name = os.environ['mapreduce_map_input_file']
-    for w in values:
-      yield w, file_name
+    for word in words:
+      yield word, file_name
 
-  def reducer(self, key, values):
+  def reducer(self, word, values):
     values = list(values)
     result = dict.fromkeys(set(values), 0)
     for document_path in values:
       result[document_path] += 1
-    yield key, result
+    result = list(result.items())
+    db.insert(word, result)
+    yield word, result
   
 if __name__ == '__main__':
   InvertedIndex.run()
