@@ -11,7 +11,7 @@ def search():
   if request.method == 'POST':
     keywords = request.form['keyword']
     language = request.form['language']
-    paths = controller.get_files(keywords, language)
+    paths = get_files(keywords, language)
     #paths = ["http://hola.com/hola", "http://chao.com/chao"]
     return render_template('list.html', paths=paths)
 

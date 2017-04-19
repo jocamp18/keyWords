@@ -42,9 +42,9 @@ def get_files(phrase, language):
     path = file[0].split("/")
     file_name = path[-1]
     if language == "english":
-      address.append("http://10.131.137.188/~en/" + file_name)
+      address.append("http://10.131.137.188/en/" + file_name)
     else:
-      address.append("http://10.131.137.188/~es/" + file_name)
+      address.append("http://10.131.137.188/es/" + file_name)
   print(address)
   return address
 
