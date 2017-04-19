@@ -1,0 +1,44 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Keywords</title>
+    <link rel="stylesheet" href="static/css/bootstrap.css">
+    <link rel="stylesheet" href="static/css/foundation.css" />
+    <script src="static/js/vendor/modernizr.js"></script>
+  </head>
+  <body>
+    <!-- Display flashed messages -->
+    {% with msgs = get_flashed_messages() %}
+      {% if msgs %}
+        {%- for msg in msgs %}
+          <div class="alert alert-info">
+            {{ msg }}
+          </div>
+        {% endfor -%}
+      {% endif %}
+    {% endwith %}
+
+    {% block body %} {% endblock %}
+
+    <h1>{{ user }} List</h1>
+    <table>
+      <thead>
+	<tr>
+	  <th width="200">Top</th>
+	  <th>Link</th>
+	</tr>
+      </thead>
+      <tbody>
+        {% for path in paths %}
+	<tr>
+	  <td>{{loop.index}}</td>
+          <td><a href={{path}}>{{get_name(path)}}</a>
+	</tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <a href="/" class="button" role="button">Back</a>
+  </body>
+</html>
