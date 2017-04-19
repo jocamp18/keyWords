@@ -1,5 +1,6 @@
 from flask import render_template, request, flash, redirect, url_for
 from app import app, mongo
+from controller import get_files
 
 @app.route('/')
 def index():
@@ -10,8 +11,8 @@ def search():
   if request.method == 'POST':
     keywords = request.form['keyword']
     language = request.form['language']
-    #paths = get_files(keywords, language)
-    paths = ["http://hola.com/hola", "http://chao.com/chao"]
+    paths = controller.get_files(keywords, language)
+    #paths = ["http://hola.com/hola", "http://chao.com/chao"]
     return render_template('list.html', paths=paths)
 
   return redirect(url_for('index'))

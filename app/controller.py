@@ -1,3 +1,5 @@
+#!/bin/env python
+
 import sys
 from mongo import Mongo
 from nltk.stem import PorterStemmer
@@ -33,7 +35,7 @@ def get_files(phrase, language):
             dic[file[0]] = file[1]
           else:
             dic[file[0]] += file[1]
-  sorted_list = sorted(dic.items(), key=itemgetter(1))  
+  sorted_list = sorted(dic.items(), key=itemgetter(1))
   sorted_list = list(reversed(sorted_list))
   address = []
   for file in sorted_list:
