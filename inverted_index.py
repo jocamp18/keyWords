@@ -6,6 +6,7 @@ from nltk.corpus import stopwords
 import re
 from mongo import Mongo
 import os
+from operator import itemgetter
 
 spanish_stemmer = SnowballStemmer('spanish')
 english_stemmer = SnowballStemmer('porter')
@@ -51,7 +52,11 @@ class InvertedIndex(MRJob):
     for file_name in values:
       result[file_name[0]] += file_name[1]
     result = list(result.items())
-    db.insert(word, result)
+    sorted_result = sorted(result, key=itemgetter(1))
+    if len(sorted_result) > 10:
+      db.insert(word, sorted_result[:10])
+    else:
+      db.insert(word, sorted_result)
     yield word, result
 
 if __name__ == '__main__':
