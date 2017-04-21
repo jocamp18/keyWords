@@ -4,7 +4,7 @@ from nltk.stem import SnowballStemmer
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 import re
-#from mongo import Mongo
+from mongo import Mongo
 import os
 
 spanish_stemmer = SnowballStemmer('spanish')
@@ -12,7 +12,7 @@ english_stemmer = SnowballStemmer('porter')
 spanish_stop_words = stopwords.words('spanish')
 english_stop_words = stopwords.words('english')
 tokenizer = RegexpTokenizer(r'\w+')
-#db = Mongo()
+db = Mongo()
 
 def tokenize(line, language):
   stemmed_words = []
@@ -51,7 +51,7 @@ class InvertedIndex(MRJob):
     for file_name in values:
       result[file_name[0]] += file_name[1]
     result = list(result.items())
-    #db.insert(word, result)
+    db.insert(word, result)
     yield word, result
 
 if __name__ == '__main__':
