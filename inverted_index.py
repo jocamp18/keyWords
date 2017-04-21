@@ -3,8 +3,7 @@ from mrjob.step import MRStep
 from nltk.stem import SnowballStemmer
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
-from langdetect import detect
-from langdetect import DetectorFactory
+import re
 #from mongo import Mongo
 import os
 
@@ -13,13 +12,13 @@ english_stemmer = SnowballStemmer('porter')
 spanish_stop_words = stopwords.words('spanish')
 english_stop_words = stopwords.words('english')
 tokenizer = RegexpTokenizer(r'\w+')
-DetectorFactory.seed = 0
 #db = Mongo()
 
-def tokenize(line):
+def tokenize(line, language):
   stemmed_words = []
+  line = re.sub(r'\d+', '', line)
   words = tokenizer.tokenize(line)
-  if detect(line) == "es":
+  if language == 'es':
     for w in words:
       if w not in spanish_stop_words:
         stemmed_words.append(spanish_stemmer.stem(w))
@@ -34,10 +33,12 @@ def tokenize(line):
 class InvertedIndex(MRJob):
 
   def mapper(self, key, line):
-    words = tokenize(line)
-    file_name = os.environ['mapreduce_map_input_file']
-    for word in words:
-      yield (word, file_name),1
+    if line != "":
+      file_name = os.environ['mapreduce_map_input_file']
+      language = file_name.split('/')[-2]
+      words = tokenize(line, language)
+      for word in words:
+        yield (word, file_name),1
 
   def combiner(self, pair, values):
     yield pair[0], (pair[1], sum(values))
