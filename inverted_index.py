@@ -16,7 +16,6 @@ db = Mongo()
 
 def tokenize(line, language):
   stemmed_words = []
-  line = re.sub(r'\d+', '', line)
   words = tokenizer.tokenize(line)
   if language == 'es':
     for w in words:
@@ -33,6 +32,7 @@ def tokenize(line, language):
 class InvertedIndex(MRJob):
 
   def mapper(self, key, line):
+    line = re.sub(r'\d+', '', line)
     if line != "":
       file_name = os.environ['mapreduce_map_input_file']
       language = file_name.split('/')[-2]
