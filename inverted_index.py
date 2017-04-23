@@ -1,11 +1,28 @@
 from mrjob.job import MRJob
 from mrjob.step import MRStep
+import nltk
+nltk.data.path.append('/home/tllanos/nltk_data')
 from nltk.stem import SnowballStemmer
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 import re
-from mongo import Mongo
+from pymongo import MongoClient
 import os
+from operator import itemgetter
+
+class Mongo():
+  def __init__(self):
+    self.client = MongoClient('10.131.137.188', 27017)
+    self.db = self.client["project13"]
+    self.db.authenticate("user1", "keywords")
+    self.indexes = self.db["indexes"]
+
+  def insert(self, word, file_paths):
+    self.indexes.insert_one({"_id": word, "file_paths": file_paths})
+
+  def search(self, word):
+    return self.indexes.find_one({"_id": word})
+
 
 spanish_stemmer = SnowballStemmer('spanish')
 english_stemmer = SnowballStemmer('porter')
@@ -16,7 +33,6 @@ db = Mongo()
 
 def tokenize(line, language):
   stemmed_words = []
-  line = re.sub(r'\d+', '', line)
   words = tokenizer.tokenize(line)
   if language == 'es':
     for w in words:
@@ -33,6 +49,7 @@ def tokenize(line, language):
 class InvertedIndex(MRJob):
 
   def mapper(self, key, line):
+    line = re.sub(r'\d+', '', line)
     if line != "":
       file_name = os.environ['mapreduce_map_input_file']
       language = file_name.split('/')[-2]
@@ -51,7 +68,11 @@ class InvertedIndex(MRJob):
     for file_name in values:
       result[file_name[0]] += file_name[1]
     result = list(result.items())
-    db.insert(word, result)
+    sorted_result = sorted(result, key=itemgetter(1))
+    if len(sorted_result) > 10:
+      db.insert(word, sorted_result[:10])
+    else:
+      db.insert(word, sorted_result)
     yield word, result
 
 if __name__ == '__main__':
