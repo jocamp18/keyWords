@@ -67,7 +67,7 @@ class InvertedIndex(MRJob):
     for file_name in values:
       result[file_name[0]] += file_name[1]
     result = list(result.items())
-    sorted_result = sorted(result, key=itemgetter(1))
+    sorted_result = sorted(result, key=itemgetter(1), reverse=True)
     if len(sorted_result) > 10:
       db.insert(word, sorted_result[:10])
     else:

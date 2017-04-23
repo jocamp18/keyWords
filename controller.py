@@ -35,16 +35,18 @@ def get_files(phrase, language):
             dic[file[0]] = file[1]
           else:
             dic[file[0]] += file[1]
-  sorted_list = sorted(dic.items(), key=itemgetter(1))
-  sorted_list = list(reversed(sorted_list))
+  sorted_list = sorted(dic.items(), key=itemgetter(1), reverse=True)
+  print(sorted_list)
   address = []
   for file in sorted_list:
     path = file[0].split("/")
+    language = path[-2]
     file_name = path[-1]
-    if language == "english":
-      address.append("http://10.131.137.188/en/" + file_name)
-    else:
-      address.append("http://10.131.137.188/es/" + file_name)
+    address.append("http://10.131.137.188/{}/{}".format(language, file_name))
+    #if language == "english":
+    #  address.append("http://10.131.137.188/en/" + file_name)
+    #else:
+    #  address.append("http://10.131.137.188/es/" + file_name)
   print(address)
   return address
 
