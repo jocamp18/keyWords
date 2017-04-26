@@ -11,9 +11,14 @@ def search():
   if request.method == 'POST':
     keywords = request.form['keyword']
     language = request.form['language']
-    paths = get_files(keywords, language)
+    paths, freq = get_files(keywords, language)
+    if paths is None:
+      flash("{} not found!".format(keywords))
+      redirect(url_for('index'))
+    else:
+      files = zip(paths, freq)
     #paths = ["http://hola.com/hola", "http://chao.com/chao"]
-    return render_template('list.html', paths=paths)
+      return render_template('list.html', files=files)
 
   return redirect(url_for('index'))
 

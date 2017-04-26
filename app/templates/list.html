@@ -26,16 +26,18 @@
     <table>
       <thead>
 	<tr>
-	  <th width="200">Top</th>
+	  <th>Top</th>
 	  <th>Link</th>
+    <th>Frecuency</th>
 	</tr>
-      </thead>
-      <tbody>
-        {% for path in paths %}
-	<tr>
-	  <td>{{loop.index}}</td>
-          <td><a href={{path}}>{{get_name(path)}}</a>
-	</tr>
+    </thead>
+    <tbody>
+        {% for path,freq in files %}
+	     <tr>
+	       <td>{{loop.index}}</td>
+         <td><a href={{path}}>{{get_name(path)}}</a></td>
+         <td>{{freq}}</td>
+	     </tr>
         {% endfor %}
       </tbody>
     </table>
