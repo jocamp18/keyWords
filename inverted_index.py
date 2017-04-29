@@ -10,11 +10,16 @@ from pymongo import MongoClient
 import os
 from operator import itemgetter
 
+MONGO_SERVER = os.environ.get('MONGO_SERVER')
+MONGO_SERVER_PORT = int(os.environ.get('MONGO_SERVER_PORT'))
+MONGO_USER = os.environ.get('MONGO_USER')
+MONGO_PASS = os.environ.get('MONGO_PASS')
+
 class Mongo():
   def __init__(self):
-    self.client = MongoClient('10.131.137.188', 27017)
+    self.client = MongoClient(MONGO_SERVER, MONGO_SERVER_PORT)
     self.db = self.client["project13"]
-    self.db.authenticate("user1", "keywords")
+    self.db.authenticate(MONGO_USER, MONGO_PASS)
     self.indexes = self.db["indexes"]
 
   def insert(self, word, file_paths):
