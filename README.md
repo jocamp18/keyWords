@@ -11,6 +11,10 @@ El propósito de este proyecto es realizar una aplicación para la búsqueda de 
 * NLTK
 * Flask (Aplicación web)
 
+## URL de Despliegue
+```
+http://10.131.137.172:5000
+```
 ## Funcionamiento
 Parcialmente el proyecto consta de dos elementos importantes:
 
@@ -47,14 +51,14 @@ class Mongo()
     db.authenticate(MONGO_USER, MONGO_PASS)
     <COLLECTION_NAME> = db[<COLLECTION_NAME>]
 
-  insert(self, word, file_paths)
+  function insert(self, word, file_paths)
     <COLLECTION_NAME>.insert_one({"_id": word, "file_paths": file_paths})
 
-  search(self, word)
+  function search(self, word)
     return <COLLECTION_NAME>.find_one({"_id": word})
 
 # Bloque 2
-tokenize(line, language)
+function tokenize(line, language)
   stemmed_words = []
   words = tokenizer.tokenize(line)
   if language == 'es', then
@@ -71,7 +75,7 @@ tokenize(line, language)
 # Bloque 3
 class InvertedIndex(MRJob)
 
-  mapper(_, line)
+  function mapper(_, line)
     line = deleteNumbers(line)
     if line != "", then
       file_name = getName('mapreduce_map_input_file)
@@ -80,10 +84,10 @@ class InvertedIndex(MRJob)
       for word in words, do
         emit (word, file_name),1
 
-  combiner(pair, values)
+  function combiner(pair, values)
     emit pair[0], (pair[1], sum(values))
 
-  reducer(word, values)
+  function reducer(word, values)
     file_names, frec = zip(*values)
     result = dict(file_names)
     for file_name in values, do
